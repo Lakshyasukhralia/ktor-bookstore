@@ -33,6 +33,13 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(StatusPages){
+        exception<Throwable> { cause ->
+            call.respond(HttpStatusCode.InternalServerError)
+            throw cause
+        }
+    }
+
     install(Locations){
 
     }
@@ -48,10 +55,13 @@ fun Application.module(testing: Boolean = false) {
         maxRangeCount = 10
     }
 
+    val users = listOf<String>("shopper1","shopper2","shopper3")
+    val admins = listOf<String>("admin")
+
     install(Authentication) {
-        basic("myBasicAuth") {
-            realm = "Ktor Server"
-            validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
+        basic("bookStoreAuth") {
+            realm = "Book store"
+            validate { if ((users.contains(it.name) || admins.contains(it.name)) && it.password == "password") UserIdPrincipal(it.name) else null }
         }
     }
 
@@ -83,6 +93,13 @@ fun Application.module(testing: Boolean = false) {
 
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+        }
+
+        authenticate("bookStoreAuth") {
+            get("/api/tryAuth") {
+                val principal = call.principal<UserIdPrincipal>()
+                call.respondText("HELLO ${principal?.name}!")
+            }
         }
 
         get("/html-dsl") {
@@ -131,13 +148,6 @@ fun Application.module(testing: Boolean = false) {
                 call.respond(HttpStatusCode.Forbidden)
             }
 
-        }
-
-        authenticate("myBasicAuth") {
-            get("/protected/route/basic") {
-                val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("Hello ${principal.name}")
-            }
         }
 
         get("/json/gson") {

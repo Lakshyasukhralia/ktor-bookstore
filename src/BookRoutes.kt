@@ -1,6 +1,7 @@
 package com.learning
 
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -13,35 +14,37 @@ fun Route.books() {
 
     val dataManager = DataManager()
 
-    get<BookListLocation>(){
-        call.respond(dataManager.sortedBooks(it.sortBy,it.asc))
+    authenticate("bookStoreAuth") {
+        get<BookListLocation>() {
+            call.respond(dataManager.sortedBooks(it.sortBy, it.asc))
+        }
     }
 
     route("/book") {
 
-        get("/"){
+        get("/") {
             call.respond(dataManager.allBooks())
         }
 
-        post("/{id}"){
+        post("/{id}") {
             val id = call.parameters["id"].toString()
             val book = call.receive(Book::class)
-            val updatedBook = dataManager.updateBook(id,book)
+            val updatedBook = dataManager.updateBook(id, book)
             if (updatedBook != null) {
                 call.respond(updatedBook)
             }
         }
 
-        put("/"){
+        put("/") {
             val book = call.receive(Book::class)
             val addedBook = dataManager.addBook(book)
             call.respond(addedBook)
         }
 
-        delete("/{id}"){
+        delete("/{id}") {
             val id = call.parameters["id"].toString()
             val deletedBookId = dataManager.deleteBook(id)
-            call.respondText{"Deleted book with id : $deletedBookId"}
+            call.respondText { "Deleted book with id : $deletedBookId" }
         }
     }
 }
