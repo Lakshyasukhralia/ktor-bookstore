@@ -1,5 +1,7 @@
 package com.learning
 
+import com.mongodb.Mongo
+import com.mongodb.client.MongoClients
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -23,6 +25,8 @@ import io.ktor.locations.*
 import kotlinx.coroutines.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+val mongoDataHandler = MongoDataHandler()
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
@@ -92,7 +96,8 @@ fun Application.module(testing: Boolean = false) {
         books()
 
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            call.respond(mongoDataHandler.allBooks())
+//            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
         }
 
         authenticate("bookStoreAuth") {
