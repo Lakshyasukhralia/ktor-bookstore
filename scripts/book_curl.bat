@@ -7,3 +7,11 @@ curl -u "shopper1:password" "localhost:8080/book/list?sortBy=id&asc=false"
 mongo "mongodb+srv://cluster0.nyawk.mongodb.net/book_store" --username lakshya
 https://book-store-ktor.herokuapp.com/
 curl https://book-store-ktor.herokuapp.com/book/
+
+//Heroku Deployment
+https://git.heroku.com/book-store-ktor.git
+git add *
+git commit -m "mongo changes"
+heroku config:set GRADLE_TASK="shadowJar"
+git push heroku master
+heroku logs --source app --tail
