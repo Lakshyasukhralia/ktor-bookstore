@@ -1,1 +1,1 @@
-web: build/install/kotlinserver/bin/kotlinserver
+web:    java -jar build/libs/appport-academy.book-store.jar

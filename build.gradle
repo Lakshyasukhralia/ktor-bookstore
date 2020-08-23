@@ -5,11 +5,13 @@ buildscript {
     
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 }
 
 apply plugin: 'kotlin'
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group 'com.learning'
 version '0.0.1'
@@ -54,4 +56,11 @@ dependencies {
     implementation "io.ktor:ktor-locations:$ktor_version"
     implementation "org.mongodb:mongodb-driver:3.12.3"
 
+}
+
+shadowJar {
+    archiveFileName = "book-store.jar"
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
 }
