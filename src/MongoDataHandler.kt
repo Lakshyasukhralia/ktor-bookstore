@@ -21,7 +21,7 @@ class MongoDataHandler {
         val codecRegistry: CodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
             pojoCodecRegistry)
 
-        val connectionString = "mongodb+srv://lakshya:haryana97@cluster0.nyawk.mongodb.net/book_store?retryWrites=true&w=majority"
+        val connectionString = System.getenv("MONGO_URL_BOOKSTORE") ?: "mongodb+srv://lakshya:haryana97@cluster0.nyawk.mongodb.net/book_store?retryWrites=true&w=majority"
 
         val clientSettings = MongoClientSettings.builder()
             .codecRegistry(codecRegistry)

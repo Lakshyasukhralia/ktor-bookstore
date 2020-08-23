@@ -26,7 +26,7 @@ import kotlinx.coroutines.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-//val mongoDataHandler = MongoDataHandler()
+val mongoDataHandler = MongoDataHandler()
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
@@ -96,8 +96,8 @@ fun Application.module(testing: Boolean = false) {
         books()
 
         get("/") {
-//            call.respond(mongoDataHandler.allBooks())
-//            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            call.respond(mongoDataHandler.allBooks())
+            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
         }
 
         authenticate("bookStoreAuth") {
